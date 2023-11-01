@@ -19,7 +19,8 @@ public class JdbcUtil {
 	public static Connection getConnection() {
 		Connection con = null;
 		try {
-			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:XE","java","java");
+			con = DriverManager.getConnection
+					("jdbc:oracle:thin:@localhost:1521:XE","java","java");
 			con.setAutoCommit(false);//자동으로 커밋하는것.지금은 자동으로 안하겠다는 뜻
 		}
 		catch(Exception e) {

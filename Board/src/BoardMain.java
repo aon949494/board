@@ -17,10 +17,11 @@ public class BoardMain {
 			String menu = sc.next();
 			switch(menu) {
 			case "1":
-				System.out.println("====회원가입===");
+				System.out.println("====회원가입====");
 				loginSVC.joinUser(sc);
 				break;
 			case "2":
+				System.out.println("====로그인====");
 				loginMain.login(sc);
 				break;
 			case "3" :

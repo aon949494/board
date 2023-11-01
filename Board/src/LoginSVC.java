@@ -10,20 +10,64 @@ public class LoginSVC {
 	static String loginEmail;
 	static String loginContents;
 	//로그인(체크), 회원가입(중복체크)
-	public void idcheak(String id) {
+	public int idcheak(String id) {
 		Scanner sc = new Scanner(System.in);
 		con = getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int i = 0;
 		try {
-			String sql = "select * from tmember where userid = '"+id+"'";
+			String sql = "select userid from tmember where userid = '"+id+"'";
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			while(rs.next()) {
-				System.out.println("중복된 아이디입니다!");
-				getjoinUser(sc);
-				break;
+			if(rs.next()) {
+				do {
+					i++;
+					System.out.println("중복된 ID입니다.");
+					getjoinUser(sc);
+					break;
+				}while(rs.next());
 			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			close(pstmt);
+			close(rs);
+			close(con);
+		}
+		return i;
+	}
+	public User getjoinUser(Scanner sc) {
+		User user=null;
+		con = getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			do {
+				System.out.print("ID : ");
+				String id = sc.next();
+				int i = 0;
+			String sql = "select userid from tmember where userid = '"+id+"'";
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+				if(rs.next()) {
+					do {
+						i++;
+						System.out.println("중복된 ID입니다.");
+					}while(rs.next());
+				}
+				else if(i==0){
+					System.out.print("Name : ");
+					String name = sc.next();
+					System.out.print("PW : ");
+					String passwd = sc.next();
+					System.out.print("Email : ");
+					String email = sc.next();
+					user = new User(id,name,passwd,email);
+					break;
+				}
+			}while(true);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -33,27 +77,12 @@ public class LoginSVC {
 			close(rs);
 			close(con);
 		}
-	}
-	public User getjoinUser(Scanner sc) {
-		
-		System.out.print("ID : ");
-		String id = sc.next();
-		idcheak(id);
-		System.out.print("Name : ");
-		String name = sc.next();
-		System.out.print("PW : ");
-		String passwd = sc.next();
-		System.out.print("Email : ");
-		String email = sc.next();
-		
-		User user = new User(id,name,passwd,email);
 		return user;
 	}
 	public void joinUser(Scanner sc) {
 		User user = getjoinUser(sc);
 		con = getConnection();
 		PreparedStatement pstmt = null;
-		
 		try{
 			String sql = "INSERT INTO tmember VALUES(?,?,?,?)";
 			pstmt = con.prepareStatement(sql);
